@@ -1,4 +1,4 @@
-# Part 5: Deploying microservice applications in AKS using Helm Chat and Azure Pipeline
+# Part 9: Deploying microservice applications in AKS using Helm Chat and Azure Pipeline
 
     Part1: Manual Deployment using comand line tools (AzCLI, Docker Desktop and kubectl)  
     GitHub: https://github.com/santosh-gh/k8s-01
