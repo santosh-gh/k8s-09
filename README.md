@@ -39,7 +39,13 @@
            Dynamically update the Chart version in Chart.yaml
            Deploy into multiple environments (dev, test, prod) with approval gates
 
-    GitHub: https://github.com/santosh-gh/k8s-07
+    GitHub: https://github.com/santosh-gh/k8s-08
+    YouTube: https://www.youtube.com/watch?v=VAiR3sNavh0
+
+    Part9: Deploying microservice applications in AKS using KUSTOMIZATION command line          
+           Deploy into multiple environments (dev, test, prod) command line
+
+    GitHub: https://github.com/santosh-gh/k8s-09
     YouTube: https://www.youtube.com/watch?v=VAiR3sNavh0
 
 # Architesture
@@ -89,30 +95,56 @@
     2. Build and push images to ACR: CI Pipelines
        order-pipeline.yml, product-pipeline.yml, store-front-pipeline.yml
 
-    3. Helm install and Helmfy
-       https://helm.sh/docs/intro/install/
+    3. kustomize install
+       The kustomize module is built into kubectl
 
-       https://github.com/arttor/helmify/releases
+       Linux: sudo install -o root -g root -m 0755 kustomize /usr/local/bin/kustomize
+       Mac: brew install kustomize
+       Windows: choco install kustomize
 
-       Advantages of helm over kubectl
+       kustomize version 
 
-       Helm uses templates with variables, so no need to duplicate YAML files for each environment
+    4. Manifest Directory structure for kustomize     
 
-       Helm supports versioned releases and can be roll back to a previous release easily
+    4. App deployment
 
-       helm list
-       helm rollback online-store 1
+        # Review
+        kubectl kustomize ./manifests/config/base/
+        kubectl kustomize ./manifests/rabbitmq/overlays/dev
+        kubectl kustomize ./manifests/order/overlays/dev
+        kubectl kustomize ./manifests/product/overlays/dev
+        kubectl kustomize ./manifests/store-front/overlays/dev
 
-       Parameterization per Environment using enverionment  specific values.yaml
-       helm install online-store ./helmchart -f dev-values-.yaml
-       helm install online-store ./helmchart -f test-values.yaml
+        kubectl kustomize ./manifests/config/base/
+        kubectl kustomize ./manifests/rabbitmq/overlays/test
+        kubectl kustomize ./manifests/order/overlays/test
+        kubectl kustomize ./manifests/product/overlays/test
+        kubectl kustomize ./manifests/store-front/overlays/test
 
-       Helm keeps track of installed releases, values, and history
-       helm list
-       helm get all online-store
+        kubectl kustomize ./manifests/config/base/
+        kubectl kustomize ./manifests/rabbitmq/overlays/prod
+        kubectl kustomize ./manifests/order/overlays/prod
+        kubectl kustomize ./manifests/product/overlays/prod
+        kubectl kustomize ./manifests/store-front/overlays/prod
 
-    4. App deployment: CD Pipelines
-       app-deploy-pipeline.yml
+        # Apply
+        kubectl apply -k ./manifests/config/base/ -n dev
+        kubectl apply -k ./manifests/rabbitmq/overlays/dev -n dev
+        kubectl apply -k ./manifests/order/overlays/dev -n dev
+        kubectl apply -k ./manifests/product/overlays/dev -n dev
+        kubectl apply -k ./manifests/store-front/overlays/dev -n dev
+
+        kubectl apply -k ./manifests/config/base/ -n test
+        kubectl apply -k ./manifests/rabbitmq/overlays/test -n test
+        kubectl apply -k ./manifests/order/overlays/test -n test
+        kubectl apply -k ./manifests/product/overlays/test -n test
+        kubectl apply -k ./manifests/store-front/overlays/test -n test
+
+        kubectl apply -k ./manifests/config/base/ -n prod
+        kubectl apply -k ./manifests/rabbitmq/overlays/prod -n prod
+        kubectl apply -k ./manifests/order/overlays/prod -n prod
+        kubectl apply -k ./manifests/product/overlays/prod -n prod
+        kubectl apply -k ./manifests/store-front/overlays/prod -n prod
 
     5. Validate and Access the application
 
@@ -184,42 +216,7 @@ Docker Build and Push
 
 # Review and apply
 
-kubectl kustomize ./manifests/config/base/
-kubectl kustomize ./manifests/rabbitmq/overlays/dev
-kubectl kustomize ./manifests/order/overlays/dev
-kubectl kustomize ./manifests/product/overlays/dev
-kubectl kustomize ./manifests/store-front/overlays/dev
-
-kubectl kustomize ./manifests/config/base/
-kubectl kustomize ./manifests/rabbitmq/overlays/test
-kubectl kustomize ./manifests/order/overlays/test
-kubectl kustomize ./manifests/product/overlays/test
-kubectl kustomize ./manifests/store-front/overlays/test
-
-kubectl kustomize ./manifests/config/base/
-kubectl kustomize ./manifests/rabbitmq/overlays/prod
-kubectl kustomize ./manifests/order/overlays/prod
-kubectl kustomize ./manifests/product/overlays/prod
-kubectl kustomize ./manifests/store-front/overlays/prod
-
-
-kubectl apply -k ./manifests/config/base/ -n dev
-kubectl apply -k ./manifests/rabbitmq/overlays/dev -n dev
-kubectl apply -k ./manifests/order/overlays/dev -n dev
-kubectl apply -k ./manifests/product/overlays/dev -n dev
-kubectl apply -k ./manifests/store-front/overlays/dev -n dev
-
-kubectl apply -k ./manifests/config/base/ -n test
-kubectl apply -k ./manifests/rabbitmq/overlays/test -n test
-kubectl apply -k ./manifests/order/overlays/test -n test
-kubectl apply -k ./manifests/product/overlays/test -n test
-kubectl apply -k ./manifests/store-front/overlays/test -n test
-
-kubectl apply -k ./manifests/config/base/ -n prod
-kubectl apply -k ./manifests/rabbitmq/overlays/prod -n prod
-kubectl apply -k ./manifests/order/overlays/prod -n prod
-kubectl apply -k ./manifests/product/overlays/prod -n prod
-kubectl apply -k ./manifests/store-front/overlays/prod -n prod
+    
 
 # Clean the k8s namespace
 
