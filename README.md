@@ -68,24 +68,7 @@
     Infra (AzCLI/Bicep)
     AKS
     ACR
-    HelmChart
-    Helmify
-
-# Advantage of storing Helm Chart in ACR
-
-    Private, encrypted storage.
-
-    Access restricted via Azure AD and RBAC.
-
-    Version Management: Charts can be tagged and versioned.
-
-    Easy rollback to previous versions if needed.
-
-    Security & Compliance    
-
-    Supports Azure Policies, private endpoints, and vulnerability scanning.
-
-    improve performance
+    kustomization
 
 # Steps
 
@@ -96,7 +79,7 @@
        order-pipeline.yml, product-pipeline.yml, store-front-pipeline.yml
 
     3. kustomize install
-       The kustomize module is built into kubectl
+       Kustomize comes pre bundled with kubectl version >= 1.14
 
        Linux: sudo install -o root -g root -m 0755 kustomize /usr/local/bin/kustomize
        Mac: brew install kustomize
@@ -106,9 +89,11 @@
 
     4. Manifest Directory structure for kustomize     
 
-    4. App deployment
+    5. App deployment
 
         # Review
+        kustomize build ./manifests/order/overlays/dev
+
         kubectl kustomize ./manifests/config/base/
         kubectl kustomize ./manifests/rabbitmq/overlays/dev
         kubectl kustomize ./manifests/order/overlays/dev
@@ -127,7 +112,10 @@
         kubectl kustomize ./manifests/product/overlays/prod
         kubectl kustomize ./manifests/store-front/overlays/prod
 
-        # Apply
+        # Apply Patches
+
+         kustomize build ./manifests/order/overlays/dev | kubectl apply -f . -n dev
+
         kubectl apply -k ./manifests/config/base/ -n dev
         kubectl apply -k ./manifests/rabbitmq/overlays/dev -n dev
         kubectl apply -k ./manifests/order/overlays/dev -n dev
